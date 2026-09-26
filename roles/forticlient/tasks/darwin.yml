@@ -1,0 +1,5 @@
+---
+- name: Install FortiClient VPN
+  community.general.homebrew_cask:
+    name: forticlient-vpn
+    state: present

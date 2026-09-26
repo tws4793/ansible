@@ -1,0 +1,6 @@
+---
+- name: Install NetworkManager fortisslvpn plugin
+  become: true
+  ansible.builtin.dnf:
+    name: NetworkManager-fortisslvpn-gnome
+    state: present

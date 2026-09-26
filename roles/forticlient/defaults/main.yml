@@ -1,0 +1,8 @@
+---
+# Linux uses the NetworkManager fortisslvpn plugin. Set this to also install
+# Fortinet's own FortiClient VPN client (Ubuntu only).
+forticlient_official_client: false
+forticlient_deb: https://filestore.fortinet.com/forticlient/forticlient_vpn_7.4.0.1636_amd64.deb
+forticlient_deb_deps:
+  - http://mirrors.kernel.org/ubuntu/pool/universe/libd/libdbusmenu/libdbusmenu-gtk4_16.04.1+18.10.20180917-0ubuntu8_amd64.deb
+  - http://mirrors.kernel.org/ubuntu/pool/universe/liba/libappindicator/libappindicator1_12.10.1+20.10.20200706.1-0ubuntu1_amd64.deb
