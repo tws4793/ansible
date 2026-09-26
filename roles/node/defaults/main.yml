@@ -1,0 +1,6 @@
+---
+node_nvm_version: v0.40.1
+node_nvm_dir: "{{ ansible_env.HOME }}/.nvm"
+node_versions:
+  - "20.16"
+node_default_version: "{{ node_versions | first }}"

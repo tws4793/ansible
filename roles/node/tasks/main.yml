@@ -1,0 +1,49 @@
+---
+- name: Clone nvm
+  ansible.builtin.git:
+    repo: https://github.com/nvm-sh/nvm.git
+    dest: "{{ node_nvm_dir }}"
+    version: "{{ node_nvm_version }}"
+
+- name: Install Node.js versions
+  ansible.builtin.shell: |
+    . "$NVM_DIR/nvm.sh"
+    if nvm ls {{ item | quote }} >/dev/null 2>&1; then
+      echo present
+    else
+      nvm install {{ item | quote }}
+    fi
+  args:
+    executable: /bin/bash
+  environment:
+    NVM_DIR: "{{ node_nvm_dir }}"
+  loop: "{{ node_versions }}"
+  register: node_install
+  changed_when: "'present' not in node_install.stdout"
+
+- name: Set default Node.js version
+  ansible.builtin.shell: |
+    . "$NVM_DIR/nvm.sh"
+    if [ "$(cat "$NVM_DIR/alias/default" 2>/dev/null)" = {{ node_default_version | quote }} ]; then
+      echo unchanged
+    else
+      nvm alias default {{ node_default_version | quote }}
+    fi
+  args:
+    executable: /bin/bash
+  environment:
+    NVM_DIR: "{{ node_nvm_dir }}"
+  register: node_default
+  changed_when: "'unchanged' not in node_default.stdout"
+
+- name: Add nvm to shell rc
+  ansible.builtin.blockinfile:
+    path: "{{ shell_rc_file }}"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK: nvm"
+    block: |
+      export NVM_DIR="{{ node_nvm_dir }}"
+      [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+      [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
+    create: true
+    mode: "0644"
+  when: manage_shell_rc
