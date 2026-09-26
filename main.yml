@@ -1,0 +1,24 @@
+---
+- name: Provision workstation
+  hosts: all
+  roles:
+    - role: base
+      tags: [base]
+    - role: dotfiles
+      tags: [dotfiles]
+      when: install_dotfiles
+    - role: desktop
+      tags: [desktop]
+      when: install_desktop
+    - role: python
+      tags: [python]
+      when: install_python
+    - role: node
+      tags: [node]
+      when: install_node
+    - role: ngrok
+      tags: [ngrok]
+      when: install_ngrok
+    - role: forticlient
+      tags: [forticlient]
+      when: install_forticlient
