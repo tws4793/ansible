@@ -1,0 +1,6 @@
+---
+python_pyenv_root: "{{ ansible_env.HOME }}/.pyenv"
+# Prefixes resolve to the latest matching release, e.g. "3.13" -> 3.13.x.
+python_versions:
+  - "3.13"
+python_global_version: "{{ python_versions | first }}"

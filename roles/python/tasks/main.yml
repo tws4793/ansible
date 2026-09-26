@@ -1,0 +1,64 @@
+---
+- name: Load OS-specific variables
+  ansible.builtin.include_vars: "{{ lookup('ansible.builtin.first_found', os_vars) }}"
+  vars:
+    os_vars:
+      files:
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+      paths:
+        - "{{ role_path }}/vars"
+
+- name: Install Python build dependencies
+  community.general.homebrew:
+    name: "{{ python_build_deps }}"
+    state: present
+  when: ansible_os_family == 'Darwin'
+
+- name: Install Python build dependencies
+  become: true
+  ansible.builtin.package:
+    name: "{{ python_build_deps }}"
+    state: present
+  when: ansible_os_family != 'Darwin'
+
+- name: Clone pyenv
+  ansible.builtin.git:
+    repo: https://github.com/pyenv/pyenv.git
+    dest: "{{ python_pyenv_root }}"
+    version: master
+    update: true
+
+- name: Install Python versions
+  ansible.builtin.command: "{{ python_pyenv_root }}/bin/pyenv install --skip-existing {{ item }}"
+  environment:
+    PYENV_ROOT: "{{ python_pyenv_root }}"
+  loop: "{{ python_versions }}"
+  register: python_install
+  changed_when: "'Installed Python' in python_install.stderr"
+
+- name: Read global Python version
+  ansible.builtin.command: "{{ python_pyenv_root }}/bin/pyenv global"
+  environment:
+    PYENV_ROOT: "{{ python_pyenv_root }}"
+  register: python_current_global
+  changed_when: false
+
+- name: Set global Python version
+  ansible.builtin.command: "{{ python_pyenv_root }}/bin/pyenv global {{ python_global_version }}"
+  environment:
+    PYENV_ROOT: "{{ python_pyenv_root }}"
+  when: python_current_global.stdout != python_global_version
+  changed_when: true
+
+- name: Add pyenv to shell rc
+  ansible.builtin.blockinfile:
+    path: "{{ shell_rc_file }}"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK: pyenv"
+    block: |
+      export PYENV_ROOT="{{ python_pyenv_root }}"
+      [ -d "$PYENV_ROOT/bin" ] && export PATH="$PYENV_ROOT/bin:$PATH"
+      eval "$(pyenv init -)"
+    create: true
+    mode: "0644"
+  when: manage_shell_rc

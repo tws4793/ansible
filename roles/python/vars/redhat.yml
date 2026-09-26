@@ -1,0 +1,18 @@
+---
+python_build_deps:
+  - bzip2
+  - bzip2-devel
+  - gcc
+  - gdbm-devel
+  - libffi-devel
+  - libnsl2-devel
+  - libuuid-devel
+  - make
+  - openssl-devel
+  - patch
+  - readline-devel
+  - sqlite
+  - sqlite-devel
+  - tk-devel
+  - xz-devel
+  - zlib-devel

@@ -1,0 +1,9 @@
+---
+python_build_deps:
+  - openssl
+  - pkgconf
+  - readline
+  - sqlite
+  - tcl-tk
+  - xz
+  - zlib
