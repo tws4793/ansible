@@ -1,0 +1,17 @@
+---
+# Feature toggles. Override per host in inventory/host_vars/<host>.yml
+# or on the command line with -e.
+install_desktop: true
+install_python: true
+install_node: true
+install_dotfiles: true
+install_ngrok: true
+install_forticlient: false
+
+# Upgrade all system packages before installing anything.
+system_upgrade: true
+
+# Append pyenv/nvm init snippets to the shell rc file. Turn this off if
+# your dotfiles already set them up.
+manage_shell_rc: true
+shell_rc_file: "{{ ansible_env.HOME }}/.{{ ansible_user_shell | basename }}rc"
