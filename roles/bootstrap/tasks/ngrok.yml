@@ -1,0 +1,22 @@
+---
+- name: Download ngrok GPG key
+  become: true
+  ansible.builtin.get_url:
+    url: https://ngrok-agent.s3.amazonaws.com/ngrok.asc
+    dest: /etc/apt/trusted.gpg.d/ngrok.asc
+    mode: '0644'
+- name: Add ngrok APT repository
+  become: true
+  ansible.builtin.apt_repository:
+    repo: "deb https://ngrok-agent.s3.amazonaws.com buster main"
+    state: present
+    filename: ngrok
+- name: Update APT cache for ngrok
+  become: true
+  apt:
+    update_cache: yes
+- name: Install ngrok
+  become: true
+  ansible.builtin.apt:
+    name: ngrok
+    state: present

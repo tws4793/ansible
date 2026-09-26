@@ -1,0 +1,31 @@
+---
+- name: Install Dotfiles
+  hosts: localhost
+  tasks:
+    - name: Pull Dotfiles
+      git:
+        repo: git@github.com:tws4793/dotfiles.git
+        dest: '{{ ansible_env.HOME }}/.df'
+        bare: yes
+        update: yes
+        accept_hostkey: yes
+        key_file: '/home/tws/.ssh/id_ed25519_gh_personal'
+    - name: Add alias
+      lineinfile:
+        path: /home/tws/.bashrc
+        line: "alias dotfiles=\"$(which git) --git-dir=$HOME/.df --work-tree=$HOME\""
+        regexp: "^alias dotfiles=\"$(which git) --git-dir=$HOME/.df --work-tree=$HOME\"$"
+        state: present
+        insertafter: EOF
+    - name: Configure git for dotfiles to ignore untracked files
+      command: >
+        git
+        --git-dir={{ ansible_env.HOME }}/.df
+        --work-tree={{ ansible_env.HOME }}
+        config --local status.showUntrackedFiles no
+    - name: Checkout the dotfiles
+      command: >
+        git
+        --git-dir={{ ansible_env.HOME }}/.df
+        --work-tree={{ ansible_env.HOME }}
+        checkout

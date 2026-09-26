@@ -1,0 +1,51 @@
+---
+packages:
+  remove:
+    - gnome-calculator
+  install:
+    - git
+    - vim
+    - tmux
+    - curl
+    - htop
+    - tree
+    - nmap
+    - openssh-server
+    - gnome-boxes
+    - gnome-tweak-tool
+    - gnupg
+    - remmina
+    - ibus
+    - ibus-mozc
+    - xsel
+    - wireshark
+    - build-essential
+    - libbz2-dev
+    - libreadline-dev
+    - libsqlite3-dev
+    - libffi-dev
+    - libgdbm-dev
+    - libncursesw5-dev
+    - libssl-dev
+    - tk-dev
+    - liblzma-dev
+    - zlib1g-dev
+    - uuid-dev
+    - inkscape
+    - qrencode
+    - fonts-roboto
+  external:
+    - anydesk:
+      deb: https://download.anydesk.com/linux/anydesk_6.4.0-1_amd64.deb
+      install: false
+    - chrome:
+      deb: https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+      install: true
+    - etcher:
+      deb: https://github.com/balena-io/etcher/releases/download/v2.1.0/balena-etcher_2.1.0_amd64.deb
+      install: false
+    - vscode:
+      deb: https://go.microsoft.com/fwlink/?LinkID=760868
+      install: true
+install_apps:
+  ngrok: true

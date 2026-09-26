@@ -1,0 +1,6 @@
+- name: Install Postman
+  community.general.snap:
+    name: postman
+    channel: latest
+    classic: false
+    state: present

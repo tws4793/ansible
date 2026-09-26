@@ -1,0 +1,26 @@
+---
+- name: Update and Upgrade
+  become: true
+  apt:
+    update_cache: yes
+    upgrade: yes
+    autoclean: yes
+    autoremove: yes
+- name: Remove Packages
+  package:
+    name: "{{ packages.remove }}"
+    state: absent
+- name: Install Packages
+  become: true
+  apt:
+    name: "{{ packages.install }}"
+    state: present
+- name: Install Other Packages
+  become: true
+  loop: "{{ packages.external }}"
+  apt:
+    deb: "{{ item.deb }}"
+  when: "{{ item.install }}"
+- name: Include ngrok Tasks
+  ansible.builtin.include_tasks: ngrok.yml
+  when: "{{ install_apps.ngrok }}"

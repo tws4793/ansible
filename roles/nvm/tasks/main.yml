@@ -1,0 +1,23 @@
+---
+- name: Setup Node
+  vars:
+    allow_world_readable_tmpfiles: true
+  block:
+    - name: Install nvm
+      shell: >
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/{{ nvm_version }}/install.sh | bash
+      args:
+        executable: /bin/bash
+        chdir: "$HOME"
+        creates: "$HOME/.nvm/nvm.sh"
+
+    - name: Install node
+      shell: |
+        source ~/.nvm/nvm.sh &&\
+        nvm install {{item}}
+      args:
+        executable: /bin/bash
+        chdir: "$HOME"
+        creates: "$HOME/.nvm/versions/node/v{{item}}"
+      loop:
+        - 20.16
