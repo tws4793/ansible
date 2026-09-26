@@ -1,0 +1,7 @@
+---
+dotfiles_repo: git@github.com:tws4793/dotfiles.git
+dotfiles_dir: "{{ ansible_env.HOME }}/.df"
+# Used only if it exists; otherwise the default SSH key/agent is used.
+dotfiles_key_file: "{{ ansible_env.HOME }}/.ssh/id_ed25519_gh_personal"
+# Existing files that the first checkout would overwrite are moved here.
+dotfiles_backup_dir: "{{ ansible_env.HOME }}/.df-backup"

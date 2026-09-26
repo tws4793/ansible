@@ -1,0 +1,60 @@
+---
+- name: Check for dotfiles SSH key
+  ansible.builtin.stat:
+    path: "{{ dotfiles_key_file }}"
+  register: dotfiles_key
+
+- name: Clone dotfiles
+  ansible.builtin.git: # noqa: latest[git]
+    repo: "{{ dotfiles_repo }}"
+    dest: "{{ dotfiles_dir }}"
+    bare: true
+    update: true
+    accept_newhostkey: true
+    key_file: "{{ dotfiles_key_file if dotfiles_key.stat.exists else omit }}"
+
+- name: Hide untracked files from dotfiles status
+  community.general.git_config:
+    name: status.showUntrackedFiles
+    value: "no"
+    scope: file
+    file: "{{ dotfiles_dir }}/config"
+
+- name: List checked-out dotfiles
+  ansible.builtin.command: git --git-dir={{ dotfiles_dir }} --work-tree={{ ansible_env.HOME }} ls-files # noqa: command-instead-of-module
+  register: dotfiles_tracked
+  changed_when: false
+
+- name: Check out dotfiles
+  when: dotfiles_tracked.stdout == ""
+  block:
+    - name: Back up files that the checkout would overwrite
+      ansible.builtin.shell: | # noqa: command-instead-of-module
+        set -o pipefail
+        git --git-dir="$DOTFILES_DIR" ls-tree -r --name-only HEAD | while IFS= read -r f; do
+          if [ -e "$HOME/$f" ] || [ -L "$HOME/$f" ]; then
+            mkdir -p "$BACKUP_DIR/$(dirname "$f")"
+            mv "$HOME/$f" "$BACKUP_DIR/$f"
+            echo "$f"
+          fi
+        done
+      args:
+        executable: /bin/bash
+      environment:
+        DOTFILES_DIR: "{{ dotfiles_dir }}"
+        BACKUP_DIR: "{{ dotfiles_backup_dir }}"
+      register: dotfiles_backup
+      changed_when: dotfiles_backup.stdout != ""
+
+    - name: Check out dotfiles
+      ansible.builtin.command: git --git-dir={{ dotfiles_dir }} --work-tree={{ ansible_env.HOME }} checkout # noqa: command-instead-of-module
+      changed_when: true
+
+- name: Add dotfiles alias to shell rc
+  ansible.builtin.lineinfile:
+    path: "{{ shell_rc_file }}"
+    regexp: "^alias dotfiles="
+    line: alias dotfiles="$(which git) --git-dir={{ dotfiles_dir | replace(ansible_env.HOME, '$HOME') }} --work-tree=$HOME"
+    create: true
+    mode: "0644"
+  when: manage_shell_rc
