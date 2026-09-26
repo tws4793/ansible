@@ -1,0 +1,19 @@
+---
+- name: Check that this OS is supported
+  ansible.builtin.assert:
+    that: ansible_os_family in ['Darwin', 'Debian', 'RedHat']
+    fail_msg: "Unsupported OS family: {{ ansible_os_family }}"
+    quiet: true
+
+- name: Load OS-specific variables
+  ansible.builtin.include_vars: "{{ lookup('ansible.builtin.first_found', os_vars) }}"
+  vars:
+    os_vars:
+      files:
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+      paths:
+        - "{{ role_path }}/vars"
+
+- name: Install base packages
+  ansible.builtin.include_tasks: "{{ ansible_os_family | lower }}.yml"

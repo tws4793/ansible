@@ -1,0 +1,6 @@
+---
+base_os_packages:
+  - gnupg
+  - openssh-server
+  - vim
+  - xsel

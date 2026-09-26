@@ -1,0 +1,18 @@
+---
+- name: Install Homebrew
+  ansible.builtin.include_role:
+    name: geerlingguy.mac.homebrew
+  vars:
+    homebrew_installed_packages: []
+    homebrew_cask_apps: []
+
+- name: Upgrade Homebrew packages
+  community.general.homebrew:
+    update_homebrew: true
+    upgrade_all: true
+  when: system_upgrade
+
+- name: Install base packages
+  community.general.homebrew:
+    name: "{{ base_packages + base_os_packages }}"
+    state: present

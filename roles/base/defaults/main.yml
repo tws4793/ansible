@@ -1,0 +1,11 @@
+---
+# Packages whose names are the same on every supported OS.
+base_packages:
+  - curl
+  - git
+  - htop
+  - neovim
+  - nmap
+  - qrencode
+  - tmux
+  - tree

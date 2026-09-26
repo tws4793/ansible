@@ -1,0 +1,14 @@
+---
+- name: Upgrade system packages
+  become: true
+  ansible.builtin.dnf:
+    name: "*"
+    state: latest # noqa: package-latest
+    update_cache: true
+  when: system_upgrade
+
+- name: Install base packages
+  become: true
+  ansible.builtin.dnf:
+    name: "{{ base_packages + base_os_packages }}"
+    state: present

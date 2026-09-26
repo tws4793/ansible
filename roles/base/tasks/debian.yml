@@ -1,0 +1,17 @@
+---
+- name: Upgrade system packages
+  become: true
+  ansible.builtin.apt:
+    update_cache: true
+    upgrade: true
+    autoclean: true
+    autoremove: true
+  when: system_upgrade
+
+- name: Install base packages
+  become: true
+  ansible.builtin.apt:
+    name: "{{ base_packages + base_os_packages }}"
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
