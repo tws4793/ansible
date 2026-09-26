@@ -1,0 +1,22 @@
+---
+- name: Remove unwanted packages
+  become: true
+  ansible.builtin.package:
+    name: "{{ desktop_remove_packages }}"
+    state: absent
+
+- name: Add Flathub remote
+  become: true
+  community.general.flatpak_remote:
+    name: flathub
+    flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+    method: system
+    state: present
+
+- name: Install Flatpak apps
+  become: true
+  community.general.flatpak:
+    name: "{{ desktop_flatpaks }}"
+    remote: flathub
+    method: system
+    state: present

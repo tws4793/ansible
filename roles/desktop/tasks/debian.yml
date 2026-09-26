@@ -1,0 +1,20 @@
+---
+- name: Install desktop packages
+  become: true
+  ansible.builtin.apt:
+    name: "{{ desktop_os_packages }}"
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Install Google Chrome
+  become: true
+  ansible.builtin.apt:
+    deb: "{{ desktop_chrome_deb }}"
+  when: desktop_chrome
+
+- name: Install Visual Studio Code
+  become: true
+  ansible.builtin.apt:
+    deb: "{{ desktop_vscode_deb }}"
+  when: desktop_vscode

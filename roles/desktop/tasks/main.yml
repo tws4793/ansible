@@ -1,0 +1,18 @@
+---
+- name: Load OS-specific variables
+  ansible.builtin.include_vars: "{{ lookup('ansible.builtin.first_found', os_vars) }}"
+  vars:
+    os_vars:
+      files:
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+      paths:
+        - "{{ role_path }}/vars"
+  when: ansible_os_family != 'Darwin'
+
+- name: Install OS-specific desktop apps
+  ansible.builtin.include_tasks: "{{ ansible_os_family | lower }}.yml"
+
+- name: Install Linux desktop apps
+  ansible.builtin.include_tasks: linux.yml
+  when: ansible_system == 'Linux'

@@ -1,0 +1,27 @@
+---
+# macOS: Homebrew casks.
+desktop_casks:
+  - font-roboto
+  - google-chrome
+  - inkscape
+  - postman
+  - visual-studio-code
+  - wireshark-app
+  # - anydesk
+  # - balenaetcher
+
+# Linux: Flathub apps, identical on Ubuntu and Fedora.
+desktop_flatpaks:
+  - com.getpostman.Postman
+  - org.inkscape.Inkscape
+  - org.remmina.Remmina
+  # - com.anydesk.Anydesk
+
+# Linux: native packages to remove.
+desktop_remove_packages:
+  - gnome-calculator
+
+# Linux: vendor-packaged apps that are better installed natively than as
+# Flatpaks (Chrome is x86_64-only on Linux).
+desktop_chrome: "{{ ansible_architecture == 'x86_64' }}"
+desktop_vscode: true

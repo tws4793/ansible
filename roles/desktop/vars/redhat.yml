@@ -1,0 +1,9 @@
+---
+desktop_os_packages:
+  - flatpak
+  - gnome-boxes
+  - gnome-tweaks
+  - google-roboto-fonts
+  - ibus
+  - ibus-mozc
+  - wireshark

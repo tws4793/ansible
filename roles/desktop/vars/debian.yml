@@ -1,0 +1,13 @@
+---
+desktop_os_packages:
+  - flatpak
+  - fonts-roboto
+  - gnome-boxes
+  - gnome-tweaks
+  - ibus
+  - ibus-mozc
+  - wireshark
+
+# The .deb packages register their own APT repositories for updates.
+desktop_chrome_deb: https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+desktop_vscode_deb: "https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-{{ 'arm64' if ansible_architecture == 'aarch64' else 'x64' }}"
