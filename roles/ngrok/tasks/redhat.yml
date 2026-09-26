@@ -1,0 +1,9 @@
+---
+# ngrok publishes no RPM repository, so install the release binary.
+- name: Install ngrok
+  become: true
+  ansible.builtin.unarchive:
+    src: "{{ ngrok_tarball }}"
+    dest: /usr/local/bin
+    remote_src: true
+    creates: /usr/local/bin/ngrok

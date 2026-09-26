@@ -1,0 +1,27 @@
+---
+# Written by the old bootstrap role without Signed-By; APT refuses to load
+# two entries for the same repository with different Signed-By values.
+- name: Remove legacy ngrok APT source
+  become: true
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /etc/apt/sources.list.d/ngrok.list
+    - /etc/apt/trusted.gpg.d/ngrok.asc
+
+- name: Add ngrok APT repository
+  become: true
+  ansible.builtin.deb822_repository:
+    name: ngrok
+    uris: https://ngrok-agent.s3.amazonaws.com
+    suites: buster
+    components: main
+    signed_by: https://ngrok-agent.s3.amazonaws.com/ngrok.asc
+
+- name: Install ngrok
+  become: true
+  ansible.builtin.apt:
+    name: ngrok
+    state: present
+    update_cache: true
